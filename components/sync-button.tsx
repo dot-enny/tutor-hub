@@ -47,7 +47,7 @@ export function SyncButton({ platform, onSync }: SyncButtonProps) {
         <Button
             onClick={handleSync}
             disabled={isLoading}
-            className={`${isConnected ? "bg-green-600 hover:bg-green-700" : config.color} text-white`}
+            className={`w-full ${isConnected ? "bg-green-600 hover:bg-green-700" : config.color} text-white`}
             variant={isConnected ? "default" : "default"}
         >
             {isLoading ? (
@@ -58,12 +58,12 @@ export function SyncButton({ platform, onSync }: SyncButtonProps) {
             ) : isConnected ? (
                 <>
                     <Check className="mr-2 h-4 w-4" />
-                    Connected to {config.name}
+                    {config.name}
                 </>
             ) : (
                 <>
-                    <span className="mr-2 text-lg">{config.icon}</span>
-                    Connect {config.name}
+                    <span className="mr-2 text-base">{config.icon}</span>
+                    {config.name}
                 </>
             )}
         </Button>
