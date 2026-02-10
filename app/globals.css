@@ -222,3 +222,34 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+/* For Webkit browsers (Chrome, Safari, Opera, newer Edge) */
+.hide-scrollbar *::-webkit-scrollbar {
+  display: none;
+  /* Hide the scrollbar visual */
+}
+
+/* For IE, older Edge, and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Animated ellipsis for "Syncing..." text */
+@keyframes ellipsis {
+
+  0%,
+  20% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}

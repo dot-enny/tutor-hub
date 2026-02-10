@@ -90,9 +90,9 @@ export function MonthCalendar({ sessions }: MonthCalendarProps) {
         <div className="flex flex-col h-full">
             {/* Month navigation header */}
             <div className="flex items-center justify-between px-1 pb-3 shrink-0">
-                <h2 className="text-lg font-semibold">
+                <h3 className="text-sm font-medium text-muted-foreground">
                     {format(currentMonth, "MMMM yyyy")}
-                </h2>
+                </h3>
                 <div className="flex items-center gap-1">
                     <Button
                         variant="ghost"

@@ -3,8 +3,59 @@
 import { SessionCard } from "@/components/session-card";
 import { CalendarView } from "@/components/calendar-view";
 import { getDashboardStats, getUpcomingSessions, mockSessions, mockStudent } from "@/lib/mock-data";
-import { BookOpen, Calendar, Clock, Users, ArrowRight } from "lucide-react";
+import { BookOpen, Calendar, Clock, Users, ArrowRight, TrendingUp } from "lucide-react";
 import Link from "next/link";
+
+// Mini bar chart component for attendance/weekly data
+function MiniBarChart({ data, color = "bg-primary" }: { data: number[]; color?: string }) {
+    const max = Math.max(...data, 1);
+    return (
+        <div className="flex items-end gap-[3px] h-8">
+            {data.map((val, i) => (
+                <div
+                    key={i}
+                    className={`w-[5px] rounded-sm ${color} transition-all`}
+                    style={{
+                        height: `${Math.max((val / max) * 100, 8)}%`,
+                        opacity: i === data.length - 1 ? 1 : 0.4 + (i / data.length) * 0.4,
+                    }}
+                />
+            ))}
+        </div>
+    );
+}
+
+// Mini sparkline-like progress ring
+function MiniRing({ value, max, label }: { value: number; max: number; label: string }) {
+    const pct = Math.min((value / max) * 100, 100);
+    const circumference = 2 * Math.PI * 16;
+    const offset = circumference - (pct / 100) * circumference;
+
+    return (
+        <div className="relative flex items-center justify-center">
+            <svg width="40" height="40" viewBox="0 0 40 40" className="-rotate-90">
+                <circle
+                    cx="20" cy="20" r="16"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="none"
+                    className="text-muted/60"
+                />
+                <circle
+                    cx="20" cy="20" r="16"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="none"
+                    strokeLinecap="round"
+                    className="text-primary transition-all duration-500"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={offset}
+                />
+            </svg>
+            <span className="absolute text-[10px] font-bold">{Math.round(pct)}%</span>
+        </div>
+    );
+}
 
 export default function DashboardPage() {
     const stats = getDashboardStats();
@@ -27,12 +78,13 @@ export default function DashboardPage() {
         console.log("Selected date:", date);
     };
 
-    const statItems = [
-        { label: "This Week", value: stats.sessionsThisWeek, icon: Calendar },
-        { label: "This Month", value: stats.sessionsThisMonth, icon: BookOpen },
-        { label: "Hours", value: `${stats.totalHoursScheduled}h`, icon: Clock },
-        { label: "Tutors", value: stats.activeTutors, icon: Users },
-    ];
+    // Mock weekly session data (last 8 weeks)
+    const weeklySessionData = [2, 3, 1, 4, 3, 5, 2, stats.sessionsThisWeek];
+    // Mock monthly hours data (last 6 months)
+    const monthlyHoursData = [8, 12, 6, 14, 10, stats.totalHoursScheduled];
+    // Mock attendance rate
+    const attendedSessions = mockSessions.filter((s) => s.status === "completed").length;
+    const totalNonCancelled = mockSessions.filter((s) => s.status !== "cancelled").length;
 
     return (
         <>
@@ -46,34 +98,80 @@ export default function DashboardPage() {
                 </p>
             </div>
 
-            {/* Row 1: Calendar + Compact Stats */}
+            {/* Row 1: Calendar + Stats with Charts */}
             <div className="flex flex-col lg:flex-row gap-4">
                 <div className="shrink-0">
                     <CalendarView sessions={mockSessions} onDateSelect={handleDateSelect} />
                 </div>
 
-                <div className="flex-1 grid grid-cols-2 lg:grid-cols-1 gap-2">
-                    {statItems.map((stat) => {
-                        const Icon = stat.icon;
-                        return (
-                            <div
-                                key={stat.label}
-                                className="flex items-center gap-2.5 rounded-md border bg-background/60 px-3 py-2.5"
-                            >
-                                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded bg-muted">
-                                    <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-[11px] text-muted-foreground leading-none">
-                                        {stat.label}
-                                    </p>
-                                    <p className="text-sm font-semibold leading-tight mt-0.5">
-                                        {stat.value}
-                                    </p>
-                                </div>
+                {/* Enhanced stats grid */}
+                <div className="flex-1 grid grid-cols-2 gap-3">
+                    {/* Sessions This Week */}
+                    <div className="rounded-md border bg-background/60 p-3 flex flex-col justify-between gap-2">
+                        <div className="flex items-center justify-between">
+                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider">This Week</p>
+                            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                        </div>
+                        <div className="flex items-end justify-between gap-3">
+                            <div>
+                                <p className="text-2xl font-bold leading-none">{stats.sessionsThisWeek}</p>
+                                <p className="text-[10px] text-muted-foreground mt-1">sessions</p>
                             </div>
-                        );
-                    })}
+                            <MiniBarChart data={weeklySessionData} color="bg-primary" />
+                        </div>
+                    </div>
+
+                    {/* Sessions This Month */}
+                    <div className="rounded-md border bg-background/60 p-3 flex flex-col justify-between gap-2">
+                        <div className="flex items-center justify-between">
+                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider">This Month</p>
+                            <BookOpen className="h-3.5 w-3.5 text-muted-foreground" />
+                        </div>
+                        <div className="flex items-end justify-between gap-3">
+                            <div>
+                                <p className="text-2xl font-bold leading-none">{stats.sessionsThisMonth}</p>
+                                <p className="text-[10px] text-muted-foreground mt-1">sessions</p>
+                            </div>
+                            <MiniBarChart data={monthlyHoursData} color="bg-chart-2" />
+                        </div>
+                    </div>
+
+                    {/* Total Hours */}
+                    <div className="rounded-md border bg-background/60 p-3 flex flex-col justify-between gap-2">
+                        <div className="flex items-center justify-between">
+                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Hours</p>
+                            <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                        </div>
+                        <div className="flex items-end justify-between gap-3">
+                            <div>
+                                <p className="text-2xl font-bold leading-none">{stats.totalHoursScheduled}h</p>
+                                <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-0.5">
+                                    <TrendingUp className="h-2.5 w-2.5 text-green-500" />
+                                    scheduled
+                                </p>
+                            </div>
+                            <MiniBarChart data={[4, 6, 3, 8, 5, 7, 4, stats.totalHoursScheduled]} color="bg-chart-3" />
+                        </div>
+                    </div>
+
+                    {/* Attendance Rate */}
+                    <div className="rounded-md border bg-background/60 p-3 flex flex-col justify-between gap-2">
+                        <div className="flex items-center justify-between">
+                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Attendance</p>
+                            <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                        </div>
+                        <div className="flex items-end justify-between gap-3">
+                            <div>
+                                <p className="text-2xl font-bold leading-none">
+                                    {attendedSessions}/{totalNonCancelled}
+                                </p>
+                                <p className="text-[10px] text-muted-foreground mt-1">
+                                    {stats.activeTutors} tutors
+                                </p>
+                            </div>
+                            <MiniRing value={attendedSessions} max={totalNonCancelled} label="attendance" />
+                        </div>
+                    </div>
                 </div>
             </div>
 
