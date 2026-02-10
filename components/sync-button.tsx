@@ -13,12 +13,12 @@ interface SyncButtonProps {
 const platformConfig = {
     zoom: {
         name: "Zoom",
-        color: "bg-[#2D8CFF] hover:bg-[#2D8CFF]/90",
+        variant: "default" as const,
         icon: "🎥",
     },
     "google-meet": {
         name: "Google Meet",
-        color: "bg-[#00897B] hover:bg-[#00897B]/90",
+        variant: "secondary" as const,
         icon: "📹",
     },
 };
@@ -47,8 +47,8 @@ export function SyncButton({ platform, onSync }: SyncButtonProps) {
         <Button
             onClick={handleSync}
             disabled={isLoading}
-            className={`w-full ${isConnected ? "bg-green-600 hover:bg-green-700" : config.color} text-white`}
-            variant={isConnected ? "default" : "default"}
+            variant={isConnected ? "outline" : config.variant}
+            className="w-full"
         >
             {isLoading ? (
                 <>

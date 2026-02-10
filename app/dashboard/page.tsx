@@ -6,6 +6,7 @@ import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { CalendarView } from "@/components/calendar-view";
 import { getDashboardStats, getUpcomingSessions, mockSessions, mockStudent } from "@/lib/mock-data";
 import { BookOpen, Calendar, Clock, Users } from "lucide-react";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
 export default function DashboardPage() {
     const stats = getDashboardStats();
@@ -32,12 +33,9 @@ export default function DashboardPage() {
     };
 
     return (
-        <div className="flex min-h-screen bg-muted/40">
-            {/* Sidebar */}
+        <SidebarProvider>
             <DashboardSidebar />
-
-            {/* Main Content */}
-            <div className="flex-1 ml-64">
+            <SidebarInset>
                 <div className="p-8 space-y-8">
                     {/* Header */}
                     <div className="flex items-center justify-between">
@@ -116,7 +114,7 @@ export default function DashboardPage() {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </SidebarInset>
+        </SidebarProvider>
     );
 }

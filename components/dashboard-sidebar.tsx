@@ -3,9 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SyncButton } from "@/components/sync-button";
-import { Card } from "@/components/ui/card";
 import { Home, Calendar, BookOpen, Settings, User } from "lucide-react";
-import { cn } from "@/lib/utils";
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarSeparator,
+} from "@/components/ui/sidebar";
 
 const navigationItems = [
     {
@@ -39,50 +50,52 @@ export function DashboardSidebar() {
     const pathname = usePathname();
 
     return (
-        <div className="fixed left-0 top-0 h-screen w-64 border-r bg-background p-6 flex flex-col">
-            {/* Logo/Brand */}
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold">TutorHub</h1>
-                <p className="text-sm text-muted-foreground">Student Portal</p>
-            </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 space-y-2">
-                {navigationItems.map((item) => {
-                    const isActive = pathname === item.href;
-                    const Icon = item.icon;
-
-                    return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={cn(
-                                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                                isActive
-                                    ? "bg-primary text-primary-foreground"
-                                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                            )}
-                        >
-                            <Icon className="h-5 w-5" />
-                            {item.name}
-                        </Link>
-                    );
-                })}
-            </nav>
-
-            {/* Sync Section */}
-            <div className="space-y-4 border-t pt-6">
-                <div>
-                    <h3 className="text-sm font-semibold mb-2">Calendar Sync</h3>
-                    <p className="text-xs text-muted-foreground mb-3">
-                        Connect your calendar
-                    </p>
+        <Sidebar>
+            <SidebarHeader>
+                <div className="px-2">
+                    <h1 className="text-lg font-bold">TutorHub</h1>
+                    <p className="text-xs text-muted-foreground">Student Portal</p>
                 </div>
-                <div className="space-y-2">
-                    <SyncButton platform="zoom" />
-                    <SyncButton platform="google-meet" />
-                </div>
-            </div>
-        </div>
+            </SidebarHeader>
+
+            <SidebarContent>
+                <SidebarGroup>
+                    <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {navigationItems.map((item) => {
+                                const isActive = pathname === item.href;
+                                const Icon = item.icon;
+
+                                return (
+                                    <SidebarMenuItem key={item.href}>
+                                        <SidebarMenuButton asChild isActive={isActive}>
+                                            <Link href={item.href}>
+                                                <Icon />
+                                                <span>{item.name}</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                );
+                            })}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarContent>
+
+            <SidebarSeparator />
+
+            <SidebarFooter>
+                <SidebarGroup>
+                    <SidebarGroupLabel>Calendar Sync</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <div className="space-y-2 p-2">
+                            <SyncButton platform="zoom" />
+                            <SyncButton platform="google-meet" />
+                        </div>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarFooter>
+        </Sidebar>
     );
 }
