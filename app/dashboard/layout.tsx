@@ -12,7 +12,7 @@ export default function DashboardLayout({
         <SidebarProvider>
             <DashboardSidebar />
             <SidebarInset>
-                <div className="p-6 space-y-6">
+                <div className="overflow-y-auto h-full p-5 space-y-5">
                     {children}
                 </div>
             </SidebarInset>

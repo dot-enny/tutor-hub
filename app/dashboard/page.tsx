@@ -28,64 +28,46 @@ export default function DashboardPage() {
     };
 
     const statItems = [
-        {
-            label: "Sessions This Week",
-            value: stats.sessionsThisWeek,
-            icon: Calendar,
-        },
-        {
-            label: "Sessions This Month",
-            value: stats.sessionsThisMonth,
-            icon: BookOpen,
-        },
-        {
-            label: "Hours Scheduled",
-            value: `${stats.totalHoursScheduled}h`,
-            icon: Clock,
-        },
-        {
-            label: "Active Tutors",
-            value: stats.activeTutors,
-            icon: Users,
-        },
+        { label: "This Week", value: stats.sessionsThisWeek, icon: Calendar },
+        { label: "This Month", value: stats.sessionsThisMonth, icon: BookOpen },
+        { label: "Hours", value: `${stats.totalHoursScheduled}h`, icon: Clock },
+        { label: "Tutors", value: stats.activeTutors, icon: Users },
     ];
 
     return (
         <>
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">
+                <h1 className="text-2xl font-bold tracking-tight">
                     Welcome back, {mockStudent.name.split(" ")[0]}!
                 </h1>
-                <p className="text-muted-foreground mt-1">
+                <p className="text-sm text-muted-foreground">
                     Here&apos;s your learning overview for today.
                 </p>
             </div>
 
             {/* Row 1: Calendar + Compact Stats */}
-            <div className="flex flex-col lg:flex-row gap-6">
-                {/* Calendar — only as wide as it needs */}
+            <div className="flex flex-col lg:flex-row gap-4">
                 <div className="shrink-0">
                     <CalendarView sessions={mockSessions} onDateSelect={handleDateSelect} />
                 </div>
 
-                {/* Compact Stats — fills remaining space */}
-                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+                <div className="flex-1 grid grid-cols-2 lg:grid-cols-1 gap-2">
                     {statItems.map((stat) => {
                         const Icon = stat.icon;
                         return (
                             <div
                                 key={stat.label}
-                                className="flex items-center gap-3 rounded-lg border bg-card p-4"
+                                className="flex items-center gap-2.5 rounded-md border bg-background/60 px-3 py-2.5"
                             >
-                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted">
-                                    <Icon className="h-4 w-4 text-muted-foreground" />
+                                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded bg-muted">
+                                    <Icon className="h-3.5 w-3.5 text-muted-foreground" />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-xs text-muted-foreground truncate">
+                                    <p className="text-[11px] text-muted-foreground leading-none">
                                         {stat.label}
                                     </p>
-                                    <p className="text-lg font-semibold leading-tight">
+                                    <p className="text-sm font-semibold leading-tight mt-0.5">
                                         {stat.value}
                                     </p>
                                 </div>
@@ -96,27 +78,22 @@ export default function DashboardPage() {
             </div>
 
             {/* Row 2: Upcoming Sessions */}
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                    <div>
-                        <h2 className="text-xl font-semibold">Upcoming Sessions</h2>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            Your next scheduled sessions
-                        </p>
-                    </div>
+                    <h2 className="text-lg font-semibold">Upcoming Sessions</h2>
                     {upcomingSessions.length > 0 && (
                         <Link
                             href="/dashboard/sessions"
-                            className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                            className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                         >
-                            View All Sessions
-                            <ArrowRight className="h-4 w-4" />
+                            View All
+                            <ArrowRight className="h-3 w-3" />
                         </Link>
                     )}
                 </div>
 
                 {displayedSessions.length > 0 ? (
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-3 sm:grid-cols-2">
                         {displayedSessions.map((session) => (
                             <SessionCard
                                 key={session.id}
@@ -128,21 +105,20 @@ export default function DashboardPage() {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-12 text-muted-foreground">
-                        <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                        <p>No upcoming sessions</p>
-                        <p className="text-sm mt-2">Schedule a session to get started</p>
+                    <div className="text-center py-8 text-muted-foreground">
+                        <Calendar className="h-10 w-10 mx-auto mb-3 opacity-50" />
+                        <p className="text-sm">No upcoming sessions</p>
                     </div>
                 )}
 
                 {upcomingSessions.length > 4 && (
-                    <div className="flex justify-center pt-2">
+                    <div className="flex justify-center pt-1">
                         <Link
                             href="/dashboard/sessions"
-                            className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                            className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                         >
-                            View {upcomingSessions.length - 4} more sessions
-                            <ArrowRight className="h-4 w-4" />
+                            View {upcomingSessions.length - 4} more
+                            <ArrowRight className="h-3 w-3" />
                         </Link>
                     </div>
                 )}

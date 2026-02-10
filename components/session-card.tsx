@@ -1,12 +1,11 @@
 "use client";
 
 import { Session } from "@/lib/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatTime, formatDate } from "@/lib/date-utils";
-import { Calendar, Clock, Video, User, MonitorPlay, FileText } from "lucide-react";
+import { Calendar, Clock, Video } from "lucide-react";
 
 interface SessionCardProps {
     session: Session;
@@ -22,96 +21,67 @@ const statusStyles = {
     cancelled: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
 };
 
-const PlatformIcon = ({ platform }: { platform: Session["platform"] }) => {
-    const className = "h-4 w-4";
-    switch (platform) {
-        case "zoom":
-            return <Video className={className} />;
-        case "google-meet":
-            return <MonitorPlay className={className} />;
-        case "none":
-            return <FileText className={className} />;
-        default:
-            return null;
-    }
-};
-
 export function SessionCard({ session, onJoin, onEdit, onCancel }: SessionCardProps) {
     const canJoin = session.status === "scheduled" || session.status === "in-progress";
     const isPast = session.status === "completed" || session.status === "cancelled";
 
     return (
-        <Card className="hover:shadow-md transition-shadow">
-            <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                        <CardTitle className="text-lg flex items-center gap-2">
-                            {session.title}
-                            {session.platform !== "none" && <PlatformIcon platform={session.platform} />}
-                        </CardTitle>
-                        <CardDescription className="mt-1">{session.subject}</CardDescription>
-                    </div>
-                    <Badge className={statusStyles[session.status]}>{session.status}</Badge>
+        <div className="rounded-md border bg-background/60 p-3 hover:shadow-sm transition-shadow space-y-2">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">{session.title}</p>
+                    <p className="text-xs text-muted-foreground">{session.subject}</p>
                 </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-                {/* Tutor Info */}
-                <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8">
-                        <AvatarImage src={session.tutor.avatar} alt={session.tutor.name} />
-                        <AvatarFallback>
-                            {session.tutor.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
-                        </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">{session.tutor.name}</p>
-                    </div>
-                </div>
+                <Badge variant="secondary" className={`text-[10px] px-1.5 py-0 shrink-0 ${statusStyles[session.status]}`}>
+                    {session.status}
+                </Badge>
+            </div>
 
-                {/* Session Details */}
-                <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        <span>{formatDate(session.startTime, "MMM d, yyyy")}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        <span>
-                            {formatTime(session.startTime)} ({session.duration} min)
-                        </span>
-                    </div>
-                </div>
+            {/* Tutor */}
+            <div className="flex items-center gap-2">
+                <Avatar className="h-5 w-5">
+                    <AvatarImage src={session.tutor.avatar} alt={session.tutor.name} />
+                    <AvatarFallback className="text-[9px]">
+                        {session.tutor.name.split(" ").map((n) => n[0]).join("")}
+                    </AvatarFallback>
+                </Avatar>
+                <p className="text-xs text-muted-foreground truncate">{session.tutor.name}</p>
+            </div>
 
-                {/* Description */}
-                {session.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">{session.description}</p>
-                )}
+            {/* Details */}
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {formatDate(session.startTime, "MMM d, yyyy")}
+                </span>
+                <span className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {formatTime(session.startTime)} · {session.duration}m
+                </span>
+            </div>
 
-                {/* Actions */}
-                {!isPast && (
-                    <div className="flex gap-2 pt-2">
-                        {canJoin && session.meetingLink && (
-                            <Button size="sm" className="flex-1" onClick={onJoin}>
-                                <Video className="h-4 w-4 mr-2" />
-                                Join
+            {/* Actions */}
+            {!isPast && (
+                <div className="flex gap-1.5 pt-1">
+                    {canJoin && session.meetingLink && (
+                        <Button size="sm" className="h-7 text-xs flex-1" onClick={onJoin}>
+                            <Video className="h-3 w-3 mr-1" />
+                            Join
+                        </Button>
+                    )}
+                    {session.status === "scheduled" && (
+                        <>
+                            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={onEdit}>
+                                Edit
                             </Button>
-                        )}
-                        {session.status === "scheduled" && (
-                            <>
-                                <Button size="sm" variant="outline" onClick={onEdit}>
-                                    Edit
-                                </Button>
-                                <Button size="sm" variant="outline" onClick={onCancel}>
-                                    Cancel
-                                </Button>
-                            </>
-                        )}
-                    </div>
-                )}
-            </CardContent>
-        </Card>
+                            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={onCancel}>
+                                Cancel
+                            </Button>
+                        </>
+                    )}
+                </div>
+            )}
+        </div>
     );
 }
