@@ -9,7 +9,7 @@ import Link from "next/link";
 export default function DashboardPage() {
     const stats = getDashboardStats();
     const upcomingSessions = getUpcomingSessions();
-    const displayedSessions = upcomingSessions.slice(0, 4);
+    const displayedSessions = upcomingSessions.slice(0, 6);
 
     const handleJoinSession = (sessionId: string) => {
         console.log("Joining session:", sessionId);
@@ -93,7 +93,7 @@ export default function DashboardPage() {
                 </div>
 
                 {displayedSessions.length > 0 ? (
-                    <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
                         {displayedSessions.map((session) => (
                             <SessionCard
                                 key={session.id}
@@ -111,13 +111,13 @@ export default function DashboardPage() {
                     </div>
                 )}
 
-                {upcomingSessions.length > 4 && (
+                {upcomingSessions.length > 6 && (
                     <div className="flex justify-center pt-1">
                         <Link
                             href="/dashboard/sessions"
                             className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                         >
-                            View {upcomingSessions.length - 4} more
+                            View {upcomingSessions.length - 6} more
                             <ArrowRight className="h-3 w-3" />
                         </Link>
                     </div>

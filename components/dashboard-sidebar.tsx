@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SyncButton } from "@/components/sync-button";
+import { useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Home, Calendar, BookOpen, Settings, User } from "lucide-react";
+import { Home, Calendar, BookOpen, Settings, User, Video, MonitorPlay, Check, Loader2 } from "lucide-react";
 import {
     Sidebar,
     SidebarContent,
@@ -16,7 +16,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarSeparator,
+    SidebarRail,
 } from "@/components/ui/sidebar";
 
 const navigationItems = [
@@ -49,12 +49,30 @@ const navigationItems = [
 
 export function DashboardSidebar() {
     const pathname = usePathname();
+    const [zoomLoading, setZoomLoading] = useState(false);
+    const [zoomConnected, setZoomConnected] = useState(false);
+    const [meetLoading, setMeetLoading] = useState(false);
+    const [meetConnected, setMeetConnected] = useState(false);
+
+    const handleZoomSync = async () => {
+        setZoomLoading(true);
+        await new Promise((r) => setTimeout(r, 1500));
+        setZoomConnected(!zoomConnected);
+        setZoomLoading(false);
+    };
+
+    const handleMeetSync = async () => {
+        setMeetLoading(true);
+        await new Promise((r) => setTimeout(r, 1500));
+        setMeetConnected(!meetConnected);
+        setMeetLoading(false);
+    };
 
     return (
-        <Sidebar>
+        <Sidebar collapsible="icon">
             <SidebarHeader>
-                <div className="flex items-center justify-between px-2">
-                    <div>
+                <div className="flex items-center justify-between px-2 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center">
+                    <div className="group-data-[collapsible=icon]:hidden">
                         <h1 className="text-lg font-bold">TutorHub</h1>
                         <p className="text-xs text-muted-foreground">Student Portal</p>
                     </div>
@@ -73,7 +91,7 @@ export function DashboardSidebar() {
 
                                 return (
                                     <SidebarMenuItem key={item.href}>
-                                        <SidebarMenuButton asChild isActive={isActive}>
+                                        <SidebarMenuButton asChild isActive={isActive} tooltip={item.name}>
                                             <Link href={item.href}>
                                                 <Icon />
                                                 <span>{item.name}</span>
@@ -87,19 +105,56 @@ export function DashboardSidebar() {
                 </SidebarGroup>
             </SidebarContent>
 
-            <SidebarSeparator className="mx-0" />
-
             <SidebarFooter>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Calendar Sync</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <div className="space-y-2 p-2">
-                            <SyncButton platform="zoom" />
-                            <SyncButton platform="google-meet" />
-                        </div>
-                    </SidebarGroupContent>
-                </SidebarGroup>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            onClick={handleZoomSync}
+                            disabled={zoomLoading}
+                            tooltip="Sync Zoom Calendar"
+                        >
+                            {zoomLoading ? (
+                                <Loader2 className="animate-spin" />
+                            ) : zoomConnected ? (
+                                <Check />
+                            ) : (
+                                <Video />
+                            )}
+                            <span>
+                                {zoomLoading
+                                    ? "Connecting..."
+                                    : zoomConnected
+                                        ? "Zoom Connected"
+                                        : "Sync Zoom Calendar"}
+                            </span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            onClick={handleMeetSync}
+                            disabled={meetLoading}
+                            tooltip="Sync Google Calendar"
+                        >
+                            {meetLoading ? (
+                                <Loader2 className="animate-spin" />
+                            ) : meetConnected ? (
+                                <Check />
+                            ) : (
+                                <MonitorPlay />
+                            )}
+                            <span>
+                                {meetLoading
+                                    ? "Connecting..."
+                                    : meetConnected
+                                        ? "Google Connected"
+                                        : "Sync Google Calendar"}
+                            </span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarFooter>
+
+            <SidebarRail />
         </Sidebar>
     );
 }
