@@ -42,11 +42,11 @@ import {
 } from "@/components/ui/sidebar";
 
 const navigationItems = [
-    { name: "Dashboard", href: "/dashboard", icon: Home },
-    { name: "My Sessions", href: "/dashboard/sessions", icon: Calendar },
-    { name: "Tutors", href: "/dashboard/tutors", icon: User },
-    { name: "Resources", href: "/dashboard/resources", icon: BookOpen },
-    { name: "Settings", href: "/dashboard/settings", icon: Settings },
+    { name: "Dashboard", href: "/dashboard", icon: Home, disabled: false },
+    { name: "My Sessions", href: "/dashboard/sessions", icon: Calendar, disabled: false },
+    { name: "Tutors", href: "/dashboard/tutors", icon: User, disabled: true },
+    { name: "Resources", href: "/dashboard/resources", icon: BookOpen, disabled: true },
+    { name: "Settings", href: "/dashboard/settings", icon: Settings, disabled: true },
 ];
 
 function AnimatedEllipsis() {
@@ -63,8 +63,8 @@ function AnimatedCheck({ visible }: { visible: boolean }) {
     return (
         <span
             className={`inline-flex items-center transition-all duration-300 ${visible
-                    ? "opacity-100 scale-100 w-5"
-                    : "opacity-0 scale-0 w-0"
+                ? "opacity-100 scale-100 w-5"
+                : "opacity-0 scale-0 w-0"
                 }`}
         >
             <Check className="h-3.5 w-3.5 text-green-500" />
@@ -75,15 +75,16 @@ function AnimatedCheck({ visible }: { visible: boolean }) {
 function SidebarCollapseToggle() {
     const { toggleSidebar, state } = useSidebar();
     return (
-        <button
+        <SidebarMenuButton
             onClick={toggleSidebar}
-            className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
-            title={state === "expanded" ? "Collapse sidebar" : "Expand sidebar"}
+            tooltip={state === "expanded" ? "Collapse" : "Expand"}
+            className="text-muted-foreground hover:text-foreground"
         >
             <ChevronsLeft
-                className={`h-4 w-4 transition-transform duration-200 ${state === "collapsed" ? "rotate-180" : ""}`}
+                className={`transition-transform duration-200 ${state === "collapsed" ? "rotate-180" : ""}`}
             />
-        </button>
+            <span>Collapse</span>
+        </SidebarMenuButton>
     );
 }
 
@@ -122,7 +123,6 @@ export function DashboardSidebar() {
         setMeetShowCheck(true);
     };
 
-    // Animate check in when connected
     useEffect(() => {
         if (zoomConnected) setZoomShowCheck(true);
     }, [zoomConnected]);
@@ -134,14 +134,13 @@ export function DashboardSidebar() {
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
-                <div className="flex items-center justify-between px-2 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center">
-                    <div className="group-data-[collapsible=icon]:hidden">
-                        <h1 className="text-lg font-bold">TutorHub</h1>
-                        <p className="text-xs text-muted-foreground">Student Portal</p>
+                <div className="flex items-center gap-2 overflow-hidden px-2 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center">
+                    <div className="flex-1 min-w-0 overflow-hidden group-data-[collapsible=icon]:hidden">
+                        <h1 className="text-lg font-bold truncate">TutorHub</h1>
+                        <p className="text-xs text-muted-foreground truncate">Student Portal</p>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="shrink-0 group-data-[collapsible=icon]:hidden">
                         <ThemeToggle />
-                        <SidebarCollapseToggle />
                     </div>
                 </div>
             </SidebarHeader>
@@ -156,22 +155,36 @@ export function DashboardSidebar() {
                                 const Icon = item.icon;
                                 return (
                                     <SidebarMenuItem key={item.href}>
-                                        <SidebarMenuButton asChild isActive={isActive} tooltip={item.name}>
-                                            <Link href={item.href}>
+                                        {item.disabled ? (
+                                            <SidebarMenuButton
+                                                isActive={false}
+                                                tooltip={`${item.name} (coming soon)`}
+                                                className="opacity-50 pointer-events-none"
+                                            >
                                                 <Icon />
                                                 <span>{item.name}</span>
-                                            </Link>
-                                        </SidebarMenuButton>
+                                            </SidebarMenuButton>
+                                        ) : (
+                                            <SidebarMenuButton asChild isActive={isActive} tooltip={item.name}>
+                                                <Link href={item.href}>
+                                                    <Icon />
+                                                    <span>{item.name}</span>
+                                                </Link>
+                                            </SidebarMenuButton>
+                                        )}
                                     </SidebarMenuItem>
                                 );
                             })}
+                            <SidebarMenuItem>
+                                <SidebarCollapseToggle />
+                            </SidebarMenuItem>
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
 
             <SidebarFooter>
-                {/* Sync buttons — link style, no icons */}
+                {/* Sync buttons — link style, hidden when collapsed */}
                 <div className="space-y-0.5 px-2 group-data-[collapsible=icon]:hidden">
                     <button
                         onClick={handleZoomSync}
@@ -205,64 +218,59 @@ export function DashboardSidebar() {
 
                 <SidebarSeparator className="group-data-[collapsible=icon]:hidden" />
 
-                {/* Mini profile */}
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton
-                                    tooltip="Account"
-                                    className="h-auto py-2"
-                                >
-                                    <Avatar className="h-7 w-7 shrink-0">
-                                        <AvatarImage src="" alt="Alex Johnson" />
-                                        <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
-                                            AJ
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <div className="flex flex-col items-start text-left leading-tight">
-                                        <span className="text-xs font-medium">Alex Johnson</span>
-                                        <span className="text-[10px] text-muted-foreground">alex@example.com</span>
-                                    </div>
-                                </SidebarMenuButton>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                                align="start"
-                                side="top"
-                                className="w-56"
-                            >
-                                <DropdownMenuLabel className="font-normal">
-                                    <div className="flex flex-col space-y-1">
-                                        <p className="text-sm font-medium">Alex Johnson</p>
-                                        <p className="text-xs text-muted-foreground">alex@example.com</p>
-                                    </div>
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    <User className="mr-2 h-4 w-4" />
-                                    Profile
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <CreditCard className="mr-2 h-4 w-4" />
-                                    Billing
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <Bell className="mr-2 h-4 w-4" />
-                                    Notifications
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <Settings className="mr-2 h-4 w-4" />
-                                    Settings
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-destructive">
-                                    <LogOut className="mr-2 h-4 w-4" />
-                                    Log out
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                {/* Mini profile — hidden when collapsed */}
+                <div className="group-data-[collapsible=icon]:hidden">
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <SidebarMenuButton className="h-auto py-2">
+                                        <Avatar className="h-7 w-7 shrink-0">
+                                            <AvatarImage src="" alt="Alex Johnson" />
+                                            <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
+                                                AJ
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div className="flex flex-col items-start text-left leading-tight">
+                                            <span className="text-xs font-medium">Alex Johnson</span>
+                                            <span className="text-[10px] text-muted-foreground">alex@example.com</span>
+                                        </div>
+                                    </SidebarMenuButton>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" side="top" className="w-56">
+                                    <DropdownMenuLabel className="font-normal">
+                                        <div className="flex flex-col space-y-1">
+                                            <p className="text-sm font-medium">Alex Johnson</p>
+                                            <p className="text-xs text-muted-foreground">alex@example.com</p>
+                                        </div>
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem>
+                                        <User className="mr-2 h-4 w-4" />
+                                        Profile
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <CreditCard className="mr-2 h-4 w-4" />
+                                        Billing
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <Bell className="mr-2 h-4 w-4" />
+                                        Notifications
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <Settings className="mr-2 h-4 w-4" />
+                                        Settings
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem className="text-destructive">
+                                        <LogOut className="mr-2 h-4 w-4" />
+                                        Log out
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </div>
             </SidebarFooter>
 
             <SidebarRail />
