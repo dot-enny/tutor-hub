@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SyncButton } from "@/components/sync-button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Home, Calendar, BookOpen, Settings, User } from "lucide-react";
 import {
     Sidebar,
@@ -52,9 +53,12 @@ export function DashboardSidebar() {
     return (
         <Sidebar>
             <SidebarHeader>
-                <div className="px-2">
-                    <h1 className="text-lg font-bold">TutorHub</h1>
-                    <p className="text-xs text-muted-foreground">Student Portal</p>
+                <div className="flex items-center justify-between px-2">
+                    <div>
+                        <h1 className="text-lg font-bold">TutorHub</h1>
+                        <p className="text-xs text-muted-foreground">Student Portal</p>
+                    </div>
+                    <ThemeToggle />
                 </div>
             </SidebarHeader>
 
