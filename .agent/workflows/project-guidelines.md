@@ -59,6 +59,12 @@ Check https://ui.shadcn.com/docs/components for the complete list. Currently ins
 - Prefer composition over complex components
 - Keep components focused and single-purpose
 
+### Icons
+- **Always use Lucide React icons** - Never use emoji or icon fonts
+- ✅ `<Video className="h-4 w-4" />`
+- ❌ `<span>🎥</span>`
+- ❌ emoji characters in any form
+
 ### Naming
 - Files: kebab-case (e.g., `session-card.tsx`)
 - Components: PascalCase (e.g., `SessionCard`)

@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { format } from "date-fns";
-import { Calendar, Clock, Video, User } from "lucide-react";
+import { formatTime, formatDate } from "@/lib/date-utils";
+import { Calendar, Clock, Video, User, MonitorPlay, FileText } from "lucide-react";
 
 interface SessionCardProps {
     session: Session;
@@ -22,10 +22,18 @@ const statusStyles = {
     cancelled: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
 };
 
-const platformIcons = {
-    zoom: "🎥",
-    "google-meet": "📹",
-    none: "📝",
+const PlatformIcon = ({ platform }: { platform: Session["platform"] }) => {
+    const className = "h-4 w-4";
+    switch (platform) {
+        case "zoom":
+            return <Video className={className} />;
+        case "google-meet":
+            return <MonitorPlay className={className} />;
+        case "none":
+            return <FileText className={className} />;
+        default:
+            return null;
+    }
 };
 
 export function SessionCard({ session, onJoin, onEdit, onCancel }: SessionCardProps) {
@@ -39,9 +47,7 @@ export function SessionCard({ session, onJoin, onEdit, onCancel }: SessionCardPr
                     <div className="flex-1">
                         <CardTitle className="text-lg flex items-center gap-2">
                             {session.title}
-                            {session.platform !== "none" && (
-                                <span className="text-xl">{platformIcons[session.platform]}</span>
-                            )}
+                            {session.platform !== "none" && <PlatformIcon platform={session.platform} />}
                         </CardTitle>
                         <CardDescription className="mt-1">{session.subject}</CardDescription>
                     </div>
@@ -69,12 +75,12 @@ export function SessionCard({ session, onJoin, onEdit, onCancel }: SessionCardPr
                 <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4" />
-                        <span>{format(session.startTime, "MMM d, yyyy")}</span>
+                        <span>{formatDate(session.startTime, "MMM d, yyyy")}</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4" />
                         <span>
-                            {format(session.startTime, "h:mm a")} ({session.duration} min)
+                            {formatTime(session.startTime)} ({session.duration} min)
                         </span>
                     </div>
                 </div>

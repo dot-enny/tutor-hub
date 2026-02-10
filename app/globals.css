@@ -7,8 +7,11 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* KEPT: Your original font stack (Geist Mono as primary) */
   --font-sans: Geist Mono, ui-monospace, monospace;
   --font-mono: JetBrains Mono, monospace;
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -16,7 +19,10 @@
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-: var(--sidebar);
+  /* Fixed typo in your original if present, or just mapped var */
   --color-sidebar: var(--sidebar);
+
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
@@ -38,6 +44,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -45,14 +52,20 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
   --font-serif: serif;
-  --radius: 0.75rem;
+
+  /* MODIFIED: Changed from 0.75rem to 0.5rem (8px) for a tighter, premium feel */
+  --radius: 0.5rem;
+
   --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
   --tracking-tight: calc(var(--tracking-normal) - 0.025em);
   --tracking-wide: calc(var(--tracking-normal) + 0.025em);
   --tracking-wider: calc(var(--tracking-normal) + 0.05em);
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+
   --tracking-normal: var(--tracking-normal);
+
   --shadow-2xl: var(--shadow-2xl);
   --shadow-xl: var(--shadow-xl);
   --shadow-lg: var(--shadow-lg);
@@ -73,7 +86,10 @@
 }
 
 :root {
-  --radius: 0.75rem;
+  /* MODIFIED: Updated to match theme (0.5rem = 8px) */
+  --radius: 0.5rem;
+
+  /* KEPT: Original Color Values */
   --background: oklch(1.0000 0 0);
   --foreground: oklch(0.2101 0.0318 264.6645);
   --card: oklch(1.0000 0 0);
@@ -106,9 +122,11 @@
   --sidebar-border: oklch(0.9276 0.0058 264.5313);
   --sidebar-ring: oklch(0.6716 0.1368 48.5130);
   --destructive-foreground: oklch(0.9851 0 0);
+
   --font-sans: Geist Mono, ui-monospace, monospace;
   --font-serif: serif;
   --font-mono: JetBrains Mono, monospace;
+
   --shadow-color: #000000;
   --shadow-opacity: 0.05;
   --shadow-blur: 4px;
@@ -119,16 +137,19 @@
   --spacing: 0.25rem;
   --shadow-2xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
   --shadow-xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
-  --shadow-sm: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
+  --shadow-sm: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsla(0, 30%, 14%, 0.05);
   --shadow: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
   --shadow-md: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 2px 4px -1px hsl(0 0% 0% / 0.05);
   --shadow-lg: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 4px 6px -1px hsl(0 0% 0% / 0.05);
   --shadow-xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 8px 10px -1px hsl(0 0% 0% / 0.05);
   --shadow-2xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.13);
-  --tracking-normal: 0rem;
+
+  /* MODIFIED: -0.025em tightens text for a "designed" feel */
+  --tracking-normal: -0.025em;
 }
 
 .dark {
+  /* KEPT: Original Dark Mode Colors */
   --background: oklch(0.1797 0.0043 308.1928);
   --foreground: oklch(0.8109 0 0);
   --card: oklch(0.1822 0 0);
@@ -161,7 +182,10 @@
   --sidebar-border: oklch(0.2520 0 0);
   --sidebar-ring: oklch(0.7214 0.1337 49.9802);
   --destructive-foreground: oklch(0.1797 0.0043 308.1928);
-  --radius: 0.75rem;
+
+  /* MODIFIED: Dark mode needs to match the new radius */
+  --radius: 0.5rem;
+
   --font-sans: Geist Mono, ui-monospace, monospace;
   --font-serif: serif;
   --font-mono: JetBrains Mono, monospace;
@@ -191,5 +215,10 @@
   body {
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
+
+    /* ADDED: Antialiasing */
+    /* This makes text look thinner and cleaner (like on Mac OS) */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }

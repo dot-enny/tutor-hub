@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MeetingPlatform } from "@/lib/types";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, Video, MonitorPlay } from "lucide-react";
 
 interface SyncButtonProps {
     platform: Exclude<MeetingPlatform, "none">;
@@ -14,12 +14,12 @@ const platformConfig = {
     zoom: {
         name: "Zoom",
         variant: "default" as const,
-        icon: "🎥",
+        icon: Video,
     },
     "google-meet": {
         name: "Google Meet",
         variant: "secondary" as const,
-        icon: "📹",
+        icon: MonitorPlay,
     },
 };
 
@@ -62,7 +62,7 @@ export function SyncButton({ platform, onSync }: SyncButtonProps) {
                 </>
             ) : (
                 <>
-                    <span className="mr-2 text-base">{config.icon}</span>
+                    <config.icon className="mr-2 h-4 w-4" />
                     {config.name}
                 </>
             )}

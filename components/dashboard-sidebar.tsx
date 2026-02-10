@@ -87,7 +87,7 @@ export function DashboardSidebar() {
                 </SidebarGroup>
             </SidebarContent>
 
-            <SidebarSeparator />
+            <SidebarSeparator className="mx-0" />
 
             <SidebarFooter>
                 <SidebarGroup>

@@ -8,28 +8,24 @@ export const mockTutors: User[] = [
         name: "Dr. Sarah Chen",
         email: "sarah.chen@tutors.com",
         role: "tutor",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
     },
     {
         id: "tutor-2",
         name: "Prof. James Wilson",
         email: "james.wilson@tutors.com",
         role: "tutor",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=James",
     },
     {
         id: "tutor-3",
         name: "Ms. Emily Rodriguez",
         email: "emily.rodriguez@tutors.com",
         role: "tutor",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
     },
     {
         id: "tutor-4",
         name: "Mr. David Park",
         email: "david.park@tutors.com",
         role: "tutor",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
     },
 ];
 
@@ -39,7 +35,6 @@ export const mockStudent: User = {
     name: "Alex Johnson",
     email: "alex.johnson@student.com",
     role: "student",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
 };
 
 // Helper to create sessions
